@@ -1,0 +1,9 @@
+Batsmen:
+Name           Runs  Balls  Fours  Sixes  SR
+---------------------------------------------
+meesum         32    2      2      2      1600.00
+
+Bowlers:
+Name           RunsGiven  Overs  Wickets  Economy
+------------------------------------------------
+afridi         25         1      2        25.00

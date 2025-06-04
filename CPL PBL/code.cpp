@@ -1,39 +1,36 @@
 #include <iostream>
 #include <fstream>
-#include <iomanip> // input/output formatting ko control karte hain
-#include <cstring> // C-style strings (character arrays) strcmp(str1, str2)
+#include <string>
 using namespace std;
 
 struct Batsman {
-    char name[25];
+    string name;
     int ones, twos, threes, fours, sixes;
     int balls;
     int runs;
     float sr;
-} ;
-Batsman batsmen[100];
+};
+
 struct Bowler {
-    char name[25];
+    string name;
     int runsGiven;
     int overs;
     int wickets;
     float econ;
-}; 
+};
 
+Batsman batsmen[100];
 Bowler bowlers[100];
-
 int batsmanCount = 0, bowlerCount = 0;
 
 void calculateBatsmanStats(int i) {
     batsmen[i].runs = batsmen[i].ones * 1 + batsmen[i].twos * 2 + batsmen[i].threes * 3 +
                       batsmen[i].fours * 4 + batsmen[i].sixes * 6;
     batsmen[i].sr = (batsmen[i].balls != 0) ? (batsmen[i].runs * 100.0f / batsmen[i].balls) : 0;
-    // 100.0f se float multiplication hota hai taake decimal bhi accurate aaye.
 }
 
 void calculateBowlerStats(int i) {
     bowlers[i].econ = (bowlers[i].overs != 0) ? (bowlers[i].runsGiven * 1.0f / bowlers[i].overs) : 0;
-    //1.0f float type ka number hai taake decimal division ho (float division).
 }
 
 void addBatsman() {
@@ -69,25 +66,24 @@ void addBowler() {
     calculateBowlerStats(bowlerCount);
     bowlerCount++;
     cout << "Bowler added.\n";
-}   
+}
 
-// batsmen[i].name jo array ke current batsman ka naam hai,aur name jo input parameter hai.
-int findBatsmanIndex(const char* name) {
+int findBatsmanIndex(string name) {
     for (int i = 0; i < batsmanCount; i++) {
-        if (strcmp(batsmen[i].name, name) == 0) return i;
+        if (batsmen[i].name == name) return i;
     }
     return -1;
 }
 
-int findBowlerIndex(const char* name) {
+int findBowlerIndex(string name) {
     for (int i = 0; i < bowlerCount; i++) {
-        if (strcmp(bowlers[i].name, name) == 0) return i;
+        if (bowlers[i].name == name) return i;
     }
     return -1;
 }
 
 void updateBatsman() {
-    char name[25];
+    string name;
     cout << "Enter batsman name to update: ";
     cin >> name;
     int idx = findBatsmanIndex(name);
@@ -107,7 +103,7 @@ void updateBatsman() {
 }
 
 void updateBowler() {
-    char name[25];
+    string name;
     cout << "Enter bowler name to update: ";
     cin >> name;
     int idx = findBowlerIndex(name);
@@ -124,7 +120,7 @@ void updateBowler() {
 }
 
 void deleteBatsman() {
-    char name[25];
+    string name;
     cout << "Enter batsman name to delete: ";
     cin >> name;
     int idx = findBatsmanIndex(name);
@@ -132,7 +128,6 @@ void deleteBatsman() {
         cout << "Batsman not found.\n";
         return;
     }
-    // Shift all batsmen after idx one position left
     for (int i = idx; i < batsmanCount - 1; i++) {
         batsmen[i] = batsmen[i + 1];
     }
@@ -141,7 +136,7 @@ void deleteBatsman() {
 }
 
 void deleteBowler() {
-    char name[25];
+    string name;
     cout << "Enter bowler name to delete: ";
     cin >> name;
     int idx = findBowlerIndex(name);
@@ -149,7 +144,6 @@ void deleteBowler() {
         cout << "Bowler not found.\n";
         return;
     }
-    // Shift all bowlers after idx one position left
     for (int i = idx; i < bowlerCount - 1; i++) {
         bowlers[i] = bowlers[i + 1];
     }
@@ -159,57 +153,52 @@ void deleteBowler() {
 
 void viewBatsmen() {
     cout << "\nBatsmen List:\n";
-    cout << "Name           Runs  Balls  Fours  Sixes  SR\n";
-    cout << "---------------------------------------------\n";
+    cout << "Name\tRuns\tBalls\tFours\tSixes\tSR\n";
     for (int i = 0; i < batsmanCount; i++) {
-        cout << setw(15) << left << batsmen[i].name
-             << setw(6) << batsmen[i].runs
-             << setw(7) << batsmen[i].balls
-             << setw(7) << batsmen[i].fours
-             << setw(7) << batsmen[i].sixes
-             << fixed << setprecision(2) << batsmen[i].sr << "\n";
+        cout << batsmen[i].name << "\t"
+             << batsmen[i].runs << "\t"
+             << batsmen[i].balls << "\t"
+             << batsmen[i].fours << "\t"
+             << batsmen[i].sixes << "\t"
+             << batsmen[i].sr << "\n";
     }
-    cout << "\n";
 }
 
 void viewBowlers() {
     cout << "\nBowlers List:\n";
-    cout << "Name           RunsGiven  Overs  Wickets  Economy\n";
-    cout << "------------------------------------------------\n";
+    cout << "Name\tRunsGiven\tOvers\tWickets\tEconomy\n";
     for (int i = 0; i < bowlerCount; i++) {
-        cout << setw(15) << left << bowlers[i].name
-             << setw(11) << bowlers[i].runsGiven
-             << setw(7) << bowlers[i].overs
-             << setw(9) << bowlers[i].wickets
-             << fixed << setprecision(2) << bowlers[i].econ << "\n";
+        cout << bowlers[i].name << "\t"
+             << bowlers[i].runsGiven << "\t\t"
+             << bowlers[i].overs << "\t"
+             << bowlers[i].wickets << "\t"
+             << bowlers[i].econ << "\n";
     }
-    cout << "\n";
 }
 
 void saveToFile() {
     ofstream fout("summary.txt");
     fout << "Batsmen:\n";
-    fout << "Name           Runs  Balls  Fours  Sixes  SR\n";
-    fout << "---------------------------------------------\n";
+    fout << "Name\tRuns\tBalls\tFours\tSixes\tSR\n";
     for (int i = 0; i < batsmanCount; i++) {
-        fout << setw(15) << left << batsmen[i].name
-             << setw(6) << batsmen[i].runs
-             << setw(7) << batsmen[i].balls
-             << setw(7) << batsmen[i].fours
-             << setw(7) << batsmen[i].sixes
-             << fixed << setprecision(2) << batsmen[i].sr << "\n";
+        fout << batsmen[i].name << "\t"
+             << batsmen[i].runs << "\t"
+             << batsmen[i].balls << "\t"
+             << batsmen[i].fours << "\t"
+             << batsmen[i].sixes << "\t"
+             << batsmen[i].sr << "\n";
     }
 
     fout << "\nBowlers:\n";
-    fout << "Name           RunsGiven  Overs  Wickets  Economy\n";
-    fout << "------------------------------------------------\n";
+    fout << "Name\tRunsGiven\tOvers\tWickets\tEconomy\n";
     for (int i = 0; i < bowlerCount; i++) {
-        fout << setw(15) << left << bowlers[i].name
-             << setw(11) << bowlers[i].runsGiven
-             << setw(7) << bowlers[i].overs
-             << setw(9) << bowlers[i].wickets
-             << fixed << setprecision(2) << bowlers[i].econ << "\n";
+        fout << bowlers[i].name << "\t"
+             << bowlers[i].runsGiven << "\t\t"
+             << bowlers[i].overs << "\t"
+             << bowlers[i].wickets << "\t"
+             << bowlers[i].econ << "\n";
     }
+
     fout.close();
     cout << "Data saved to summary.txt\n";
 }
